@@ -1,60 +1,55 @@
 @startuml
-' Canonical IDs khớp srs.md: UC-01..UC-12
-' Các node phụ hậu tố "a" (UC-04a, UC-08a) là sub-step, không tách khỏi FR gốc.
+' Converted from the supplied draw.io use-case diagram
 left to right direction
+skinparam shadowing false
 skinparam packageStyle rectangle
-skinparam ranksep 70
-skinparam nodesep 25
+skinparam defaultFontName Arial
 
 actor "Khách hàng" as Customer
 actor "Nhân viên / Quản lý" as Staff
-actor "Cổng thanh toán" as PaymentGateway
 
-rectangle "BrewLite System" {
-' --- Menu ---
-usecase "Xem menu" as UC_01
-usecase "Xem chi tiết sản phẩm" as UC_02
-usecase "Tùy chọn Size/Topping" as UC_03
-usecase "Thêm vào giỏ hàng" as UC_04a
+rectangle "Hệ thống đặt hàng" {
+  usecase "Nhấn đặt hàng" as PlaceOrder
+  usecase "Thanh toán đơn hàng" as Checkout
+  usecase "Áp dụng mã khuyến mãi" as Promo
+  usecase "Thanh toán bằng Ví" as Wallet
+  usecase "Thanh toán bằng Thẻ" as Card
 
-' --- Giỏ hàng & Tài khoản ---
-usecase "Quản lý giỏ hàng" as UC_04
-usecase "Đăng ký tài khoản" as UC_05
-usecase "Đăng nhập" as UC_06
-
-' --- Đặt hàng & Thanh toán ---
-usecase "Đặt đơn hàng" as UC_07
-usecase "Thanh toán đơn hàng" as UC_08
-usecase "Áp dụng khuyến mãi" as UC_09
-usecase "Thanh toán online" as UC_08a
-
-' --- Lịch sử & Quản lý ---
-usecase "Xem lịch sử & trạng thái đơn" as UC_10
-usecase "Quản lý trạng thái đơn" as UC_11
-usecase "Quản lý sản phẩm/menu" as UC_12
+  usecase "Xem lịch sử đơn hàng" as History
+  usecase "Xem menu" as Menu
+  usecase "Xem chi tiết sản phẩm" as ProductDetails
+  usecase "Đăng nhập" as Login
+  usecase "Đăng ký" as Register
+  usecase "Xem giỏ hàng" as Cart
+  usecase "Thay đổi số lượng" as Quantity
+  usecase "Thêm vào giỏ hàng" as AddToCart
+  usecase "Chọn topping" as Topping
+  usecase "Chọn size đồ uống" as Size
+  usecase "Quản lý trạng thái đơn hàng" as ManageOrder
 }
 
-UC_01 -[hidden]down- UC_04
-UC_04 -[hidden]down- UC_05
-UC_05 -[hidden]down- UC_07
-UC_10 -[hidden]down- UC_11
-UC_11 -[hidden]down- UC_12
+Customer -- PlaceOrder
+Customer -- History
+Customer -- Menu
+Customer -- ProductDetails
+Customer -- Login
+Customer -- Register
+Customer -- Cart
 
-Customer --> UC_01
-Customer --> UC_04
-Customer --> UC_05
-Customer --> UC_06
-Customer --> UC_07
-Customer --> UC_10
-Customer --> UC_08
-UC_02 .left.> UC_01 : <<extend>>
-UC_03 .left.> UC_02 : <<extend>>
-UC_04a .left.> UC_02 : <<extend>>
-UC_09 .left.> UC_07 : <<extend>>
-UC_08 ..> UC_08a : <<include>>
-UC_08a --> PaymentGateway
+Staff -- Login
+Staff -- ManageOrder
 
-Staff --> UC_06
-Staff -left-> UC_11
-Staff -left-> UC_12
+PlaceOrder ..> Checkout : <<include>>
+Promo ..> Checkout : <<extend>>
+Wallet ..> Checkout : <<extend>>
+Card ..> Checkout : <<extend>>
+
+Cart ..> Quantity : <<extend>>
+AddToCart ..> ProductDetails : <<extend>>
+Topping .. AddToCart
+Size .. AddToCart
+
+' Source note: the AddToCart -> ProductDetails edge has BOTH
+' <<extend>> and <<include>> labels in draw.io; <<extend>> is retained here.
+' Source note: Topping / Size dashed edges have no reliable stereotype.
 @enduml
