@@ -1,0 +1,53 @@
+@startuml
+title Use Case – Đặt và thanh toán đơn hàng (BrewLite)
+
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam packageStyle rectangle
+skinparam ArrowColor #444444
+skinparam UsecaseBorderColor #4b2e1f
+skinparam UsecaseBackgroundColor #f7f1e8
+skinparam ActorBorderColor #4b2e1f
+skinparam ranksep 90
+skinparam nodesep 25
+
+actor "Khách hàng" as Customer
+actor "Cổng thanh toán\n(Mock Payment Gateway)" as PaymentGateway
+
+rectangle "BrewLite System" {
+  usecase "Đặt và thanh toán\nđơn hàng" as UC_CHK
+
+  usecase "Xác thực JWT\n& validate dữ liệu" as UC_Auth
+  usecase "Tạo đơn hàng\n(transaction: kiểm tra & trừ tồn kho,\ntính tiền phía server)" as UC_07
+  usecase "Thanh toán đơn hàng" as UC_08
+
+  usecase "Chọn phương thức\n(Ví điện tử / Thẻ ngân hàng)" as UC_Method
+  usecase "Kiểm tra quyền sở hữu, trạng thái đơn\n& Idempotency-Key" as UC_Check
+  usecase "Thanh toán online\n(gửi yêu cầu, nhận kết quả)" as UC_Pay
+  usecase "Cập nhật Payment & Order\n(OrderStateMachine)" as UC_Update
+
+  usecase "Áp dụng mã khuyến mãi" as UC_Promo
+  usecase "Thanh toán lại\n(đơn PAYMENT_FAILED)" as UC_Retry
+  usecase "Hủy đơn\n(hoàn tồn kho)" as UC_Cancel
+  usecase "Cộng điểm tích lũy\n(khi PAID)" as UC_Loyalty
+}
+
+Customer --> UC_CHK
+
+UC_CHK ..> UC_Auth : <<include>>
+UC_CHK ..> UC_07 : <<include>>
+UC_CHK ..> UC_08 : <<include>>
+
+UC_08 ..> UC_Method : <<include>>
+UC_08 ..> UC_Check : <<include>>
+UC_08 ..> UC_Pay : <<include>>
+UC_08 ..> UC_Update : <<include>>
+
+UC_Promo .up.> UC_07 : <<extend>>
+UC_Retry .up.> UC_08 : <<extend>>
+UC_Cancel .up.> UC_CHK : <<extend>>
+UC_Loyalty .up.> UC_08 : <<extend>>
+
+UC_Pay --> PaymentGateway
+@enduml
