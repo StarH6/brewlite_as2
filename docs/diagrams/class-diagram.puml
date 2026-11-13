@@ -1,0 +1,211 @@
+
+@startuml
+
+left to right direction
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+hide methods
+hide circle
+
+    class User {
+        +userId: UUID
+        +username: String
+        +email: String
+        +passwordHash: String
+        +role: UserRole
+        +isActive: Boolean
+        +loyaltyPoints: Int
+    }
+
+    class LoyaltyTransaction {
+        +transactionId: UUID
+        +points: Int
+        +type: LoyaltyType
+        +createdAt: DateTime
+    }
+
+
+    class Product {
+        +productId: UUID
+        +name: String
+        +description: String
+        +basePrice: Decimal
+        +imageUrl: String
+        +stock: Int
+        +version: Int
+        +status: ProductStatus
+    }
+
+    class ProductOption {
+        +optionId: UUID
+        +name: String
+        +type: OptionType
+        +priceAdjustment: Decimal
+        +isAvailable: Boolean
+    }
+
+    class Ingredient {
+        +ingredientId: UUID
+        +name: String
+        +unit: String
+        +stock: Decimal
+    }
+
+    class ProductIngredient {
+        +quantityPerServing: Decimal
+    }
+
+    class ProductOptionIngredient {
+        +quantityDelta: Decimal
+    }
+
+
+
+    class Order {
+        +orderId: UUID
+        +orderCode: String
+        +subtotal: Decimal
+        +discountAmount: Decimal
+        +totalAmount: Decimal
+        +status: OrderStatus
+        +createdAt: DateTime
+        +cancelReason: CancelReason
+        +cancelledAt: DateTime
+        +cancelledBy: UUID
+    }
+
+    class OrderItem {
+        +orderItemId: UUID
+        +productName: String
+        +quantity: Int
+        +unitPrice: Decimal
+        +subtotal: Decimal
+    }
+
+    class OrderItemOption {
+        +orderItemOptionId: UUID
+        +optionName: String
+        +optionType: OptionType
+        +priceAdjustment: Decimal
+    }
+
+    class OrderIngredientUsage {
+        +quantity: Decimal
+    }
+
+    class OrderProductStockUsage {
+        +quantity: Int
+    }
+
+
+    class Payment {
+        +paymentId: UUID
+        +idempotencyKey: String
+        +amount: Decimal
+        +method: PaymentMethod
+        +status: PaymentStatus
+        +transactionReference: String
+        +createdAt: DateTime
+    }
+
+    class Promotion {
+        +promotionId: UUID
+        +code: String
+        +discountType: DiscountType
+        +discountValue: Decimal
+        +maxDiscount: Decimal
+        +minimumOrderAmount: Decimal
+        +startAt: DateTime
+        +endAt: DateTime
+        +status: PromotionStatus
+    }
+
+
+    enum UserRole {
+        CUSTOMER
+        STAFF
+    }
+
+    enum ProductStatus {
+        ACTIVE
+        HIDDEN
+    }
+
+    enum OptionType {
+        SIZE
+        TOPPING
+    }
+
+    enum OrderStatus {
+        PENDING
+        PAID
+        PAYMENT_FAILED
+        PREPARING
+        READY
+        COMPLETED
+        CANCELLED
+    }
+
+    enum PaymentMethod {
+        WALLET
+        CARD
+    }
+
+    enum PaymentStatus {
+        INITIATED
+        PAID
+        FAILED
+    }
+
+    enum CancelReason {
+        CUSTOMER
+        STAFF
+        SYSTEM_EXPIRED
+    }
+
+    enum DiscountType {
+        PERCENTAGE
+        FIXED
+    }
+
+    enum PromotionStatus {
+        ACTIVE
+        INACTIVE
+    }
+
+    enum LoyaltyType {
+        EARN
+        REVERSAL
+    }
+
+
+' User relationships
+User "1" -- "0..*" Order 
+User "1" -- "0..*" Payment 
+User "1" -- "0..*" LoyaltyTransaction 
+
+' Product relationships
+Product "1" *-- "0..*" ProductOption : Có
+Product "1" -- "0..*" OrderItem 
+Product "1" *-- "0..*" ProductIngredient
+Ingredient "1" -- "0..*" ProductIngredient
+
+ProductOption "1" *-- "0..*" ProductOptionIngredient
+Ingredient "1" -- "0..*" ProductOptionIngredient
+
+' Order relationships
+Order "1" *-- "1..*" OrderItem 
+OrderItem "1" *-- "0..*" OrderItemOption
+
+Order "1" -- "0..*" Payment
+Order "1" -- "0..2" LoyaltyTransaction 
+Promotion "0..1" -- "0..*" Order
+
+' Inventory usage snapshots
+Order "1" *-- "0..*" OrderIngredientUsage 
+Ingredient "1" -- "0..*" OrderIngredientUsage
+
+Order "1" *-- "0..*" OrderProductStockUsage
+Product "1" -- "0..*" OrderProductStockUsage
+
+@enduml
