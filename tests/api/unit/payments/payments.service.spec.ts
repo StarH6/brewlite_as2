@@ -12,12 +12,12 @@ import {
   PaymentStatus,
   Prisma,
 } from '@prisma/client';
-import { LoyaltyService } from '../loyalty/loyalty.service';
-import { OrderStateMachine } from '../orders/domain/order-state-machine';
-import { OrdersService } from '../orders/orders.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { PaymentsService } from './payments.service';
-import { VnpayPaymentsService } from './vnpay/vnpay-payments.service';
+import { LoyaltyService } from '../../../../apps/api/src/loyalty/loyalty.service';
+import { OrderStateMachine } from '../../../../apps/api/src/orders/domain/order-state-machine';
+import { OrdersService } from '../../../../apps/api/src/orders/orders.service';
+import { PrismaService } from '../../../../apps/api/src/prisma/prisma.service';
+import { PaymentsService } from '../../../../apps/api/src/payments/payments.service';
+import { VnpayPaymentsService } from '../../../../apps/api/src/payments/vnpay/vnpay-payments.service';
 
 describe('PaymentsService + OrderStateMachine (FR-06, FR-08, FR-10)', () => {
   let service: PaymentsService;

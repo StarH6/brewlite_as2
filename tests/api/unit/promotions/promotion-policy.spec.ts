@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { DiscountType, Prisma, PromotionStatus } from '@prisma/client';
-import { PromotionData, PromotionPolicy } from './promotion-policy';
+import { PromotionData, PromotionPolicy } from '../../../../apps/api/src/promotions/domain/promotion-policy';
 
 describe('PromotionPolicy', () => {
   const basePromo: PromotionData = {

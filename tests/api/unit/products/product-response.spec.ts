@@ -1,6 +1,6 @@
 
 import { Prisma } from '@prisma/client';
-import { toProductResponse, type ProductWithOptions } from './product-response';
+import { toProductResponse, type ProductWithOptions } from '../../../../apps/api/src/products/product-response';
 
 function product(
   stock: number,

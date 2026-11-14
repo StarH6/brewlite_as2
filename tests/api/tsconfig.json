@@ -1,0 +1,15 @@
+{
+  "extends": "../../apps/api/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../..",
+    "paths": {
+      "*": ["apps/api/node_modules/*"]
+    },
+    "typeRoots": ["../../apps/api/node_modules/@types"],
+    "types": ["node", "jest"],
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": ["./**/*.ts", "../../apps/api/src/**/*.ts"],
+  "exclude": ["../../node_modules", "../../apps/api/dist"]
+}

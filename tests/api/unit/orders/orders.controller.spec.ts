@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRole } from '@prisma/client';
-import type { AuthenticatedUser } from '../auth/auth.types';
-import { OrdersController } from './orders.controller';
-import { OrdersService } from './orders.service';
+import type { AuthenticatedUser } from '../../../../apps/api/src/auth/auth.types';
+import { OrdersController } from '../../../../apps/api/src/orders/orders.controller';
+import { OrdersService } from '../../../../apps/api/src/orders/orders.service';
 
 describe('OrdersController (CV16 / Task 9)', () => {
   let controller: OrdersController;

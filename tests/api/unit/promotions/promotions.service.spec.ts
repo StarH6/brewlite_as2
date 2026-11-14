@@ -1,8 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DiscountType, Prisma, PromotionStatus } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { PromotionsService } from './promotions.service';
+import { PrismaService } from '../../../../apps/api/src/prisma/prisma.service';
+import { PromotionsService } from '../../../../apps/api/src/promotions/promotions.service';
 
 describe('PromotionsService', () => {
   let service: PromotionsService;

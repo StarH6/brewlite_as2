@@ -1,4 +1,4 @@
-import { LoyaltyPolicy } from './loyalty-policy';
+import { LoyaltyPolicy } from '../../../../apps/api/src/loyalty/domain/loyalty-policy';
 
 describe('LoyaltyPolicy', () => {
   describe('calculateEarnedPoints', () => {

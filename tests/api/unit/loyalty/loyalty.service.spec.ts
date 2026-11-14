@@ -2,8 +2,8 @@
 import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoyaltyType, Prisma } from '@prisma/client';
-import { PrismaService } from '../prisma/prisma.service';
-import { LoyaltyService } from './loyalty.service';
+import { PrismaService } from '../../../../apps/api/src/prisma/prisma.service';
+import { LoyaltyService } from '../../../../apps/api/src/loyalty/loyalty.service';
 
 describe('LoyaltyService', () => {
   let service: LoyaltyService;

@@ -1,6 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import { OrderStatus } from '@prisma/client';
-import { OrderStateMachine } from './order-state-machine';
+import { OrderStateMachine } from '../../../../apps/api/src/orders/domain/order-state-machine';
 
 describe('OrderStateMachine (FR-08)', () => {
   describe('assertTransition - Các chuyển đổi hợp lệ', () => {

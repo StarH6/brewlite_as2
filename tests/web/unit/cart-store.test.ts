@@ -8,7 +8,7 @@
  * - Persist localStorage & F5 rehydration
  */
 
-import type { CartSelection, Product, ProductOption } from './types';
+import type { CartSelection, Product, ProductOption } from '../../../apps/web/lib/types';
 
 // Giả lập localStorage cho môi trường kiểm thử
 const storageMap = new Map<string, string>();
@@ -52,7 +52,7 @@ async function runTests() {
     calculateCartSubtotal,
     resolveCartItems,
     MAX_ITEM_QUANTITY,
-  } = await import('./cart-store');
+  } = await import('../../../apps/web/lib/cart-store');
 
   // Dữ liệu mẫu
   const mockProductA: Product = {
