@@ -8,7 +8,7 @@
 | Tên | Thanh toán đơn hàng |
 | Actor chính | Khách hàng |
 | Actor phụ | VNPay Sandbox |
-| Mục tiêu | Thanh toán một đơn hàng bằng ví QR mô phỏng, thẻ mô phỏng hoặc VNPay Sandbox; nhận kết quả và tránh xử lý giao dịch trùng lặp. Các giao dịch chỉ phục vụ mục đích thử nghiệm, không sử dụng tiền thật. |
+| Mục tiêu | Thanh toán một đơn hàng bằng ví QR mô phỏng, thẻ mô phỏng hoặc VNPay Sandbox; nhận kết quả và tránh xử lý giao dịch trùng lặp. Các giao dịch chỉ phục vụ mục đích thử nghiệm. |
 
 ## 2. Sơ đồ Use Case
 
