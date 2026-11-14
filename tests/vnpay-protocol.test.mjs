@@ -1,4 +1,3 @@
-// Dependency-free smoke tests; Node >=22.13. No pnpm/npm install required.
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { readFile } from 'node:fs/promises';

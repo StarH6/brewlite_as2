@@ -6,11 +6,11 @@ import { Test } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { AuthModule } from '../auth/auth.module';
-import { HttpExceptionFilter } from '../common/filters/http-exception.filter';
-import { PrismaModule } from '../prisma/prisma.module';
-import { PrismaService } from '../prisma/prisma.service';
-import { PaymentsModule } from './payments.module';
+import { AuthModule } from '../../../apps/api/src/auth/auth.module';
+import { HttpExceptionFilter } from '../../../apps/api/src/common/filters/http-exception.filter';
+import { PrismaModule } from '../../../apps/api/src/prisma/prisma.module';
+import { PrismaService } from '../../../apps/api/src/prisma/prisma.service';
+import { PaymentsModule } from '../../../apps/api/src/payments/payments.module';
 
 const JWT_SECRET = 'test-secret-that-is-at-least-32-characters-long';
 

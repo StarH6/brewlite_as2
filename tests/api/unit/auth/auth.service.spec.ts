@@ -1,8 +1,8 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import type { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import type { PrismaService } from '../prisma/prisma.service';
-import { AuthService } from './auth.service';
+import type { PrismaService } from '../../../../apps/api/src/prisma/prisma.service';
+import { AuthService } from '../../../../apps/api/src/auth/auth.service';
 
 type Mocked = {
   user: { create: jest.Mock; findUnique: jest.Mock };

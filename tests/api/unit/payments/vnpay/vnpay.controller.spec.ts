@@ -1,8 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Response } from 'express';
-import { VnpayController } from './vnpay.controller';
-import { VnpayPaymentsService } from './vnpay-payments.service';
+import { VnpayController } from '../../../../../apps/api/src/payments/vnpay/vnpay.controller';
+import { VnpayPaymentsService } from '../../../../../apps/api/src/payments/vnpay/vnpay-payments.service';
 
 describe('VNPay public Return controller', () => {
   const payments = { confirmReturn: jest.fn() };

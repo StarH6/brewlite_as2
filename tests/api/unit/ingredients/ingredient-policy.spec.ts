@@ -5,7 +5,7 @@ import {
   missingIngredients,
   type OptionEffectLine,
   type RecipeLine,
-} from './ingredient-policy';
+} from '../../../../apps/api/src/ingredients/domain/ingredient-policy';
 
 const milk = (stock: number, perServing = 150): RecipeLine => ({
   ingredientId: 'ing-milk',

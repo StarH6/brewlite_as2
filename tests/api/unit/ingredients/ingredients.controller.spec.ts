@@ -1,8 +1,8 @@
 import { ForbiddenException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { UserRole } from '@prisma/client';
-import { IngredientsController } from './ingredients.controller';
-import { IngredientsService } from './ingredients.service';
+import { IngredientsController } from '../../../../apps/api/src/ingredients/ingredients.controller';
+import { IngredientsService } from '../../../../apps/api/src/ingredients/ingredients.service';
 
 describe('IngredientsController: chỉ nhân viên được quản lý nguyên liệu', () => {
   let controller: IngredientsController;

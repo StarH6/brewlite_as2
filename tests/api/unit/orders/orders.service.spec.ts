@@ -7,10 +7,10 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CancelReason, OptionType, OrderStatus, Prisma, UserRole } from '@prisma/client';
-import { LoyaltyService } from '../loyalty/loyalty.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { PromotionsService } from '../promotions/promotions.service';
-import { OrdersService } from './orders.service';
+import { LoyaltyService } from '../../../../apps/api/src/loyalty/loyalty.service';
+import { PrismaService } from '../../../../apps/api/src/prisma/prisma.service';
+import { PromotionsService } from '../../../../apps/api/src/promotions/promotions.service';
+import { OrdersService } from '../../../../apps/api/src/orders/orders.service';
 
 describe('OrdersService (FR-05, FR-08, FR-09, FR-10, NFR-05, CV21)', () => {
   let service: OrdersService;

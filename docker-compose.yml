@@ -96,7 +96,6 @@ services:
       - ./apps/web/app:/app/apps/web/app
       - ./apps/web/components:/app/apps/web/components
       - ./apps/web/lib:/app/apps/web/lib
-      - ./apps/web/lib:/app/apps/web/lib
       - ./apps/web/public:/app/apps/web/public
       - ./apps/web/next.config.ts:/app/apps/web/next.config.ts:ro
       - ./apps/web/tailwind.config.ts:/app/apps/web/tailwind.config.ts:ro

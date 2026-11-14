@@ -1,8 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@prisma/client';
-import { signVnpayParameters } from './vnpay.protocol';
-import { VnpayService } from './vnpay.service';
+import { signVnpayParameters } from '../../../../../apps/api/src/payments/vnpay/vnpay.protocol';
+import { VnpayService } from '../../../../../apps/api/src/payments/vnpay/vnpay.service';
 
 describe('VnpayService (sandbox, Return only)', () => {
   const secret = 'sandbox-test-secret';

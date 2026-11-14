@@ -1,12 +1,12 @@
 import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OrderStatus, PaymentMethod, PaymentStatus, Prisma, type Order, type Payment } from '@prisma/client';
-import { LoyaltyService } from '../../loyalty/loyalty.service';
-import { OrdersService } from '../../orders/orders.service';
-import { PrismaService } from '../../prisma/prisma.service';
-import { signVnpayParameters } from './vnpay.protocol';
-import { VnpayPaymentsService } from './vnpay-payments.service';
-import { VnpayService } from './vnpay.service';
+import { LoyaltyService } from '../../../../../apps/api/src/loyalty/loyalty.service';
+import { OrdersService } from '../../../../../apps/api/src/orders/orders.service';
+import { PrismaService } from '../../../../../apps/api/src/prisma/prisma.service';
+import { signVnpayParameters } from '../../../../../apps/api/src/payments/vnpay/vnpay.protocol';
+import { VnpayPaymentsService } from '../../../../../apps/api/src/payments/vnpay/vnpay-payments.service';
+import { VnpayService } from '../../../../../apps/api/src/payments/vnpay/vnpay.service';
 
 describe('VNPay initiation + signed Return', () => {
   const secret = 'sandbox-test-secret';

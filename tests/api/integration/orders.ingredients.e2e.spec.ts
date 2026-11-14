@@ -9,11 +9,11 @@ import { Test } from '@nestjs/testing';
 import { OrderStatus, Prisma, UserRole } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { HttpExceptionFilter } from '../common/filters/http-exception.filter';
-import { PrismaModule } from '../prisma/prisma.module';
-import { PrismaService } from '../prisma/prisma.service';
-import { OrdersModule } from './orders.module';
+import { JwtAuthGuard } from '../../../apps/api/src/auth/jwt-auth.guard';
+import { HttpExceptionFilter } from '../../../apps/api/src/common/filters/http-exception.filter';
+import { PrismaModule } from '../../../apps/api/src/prisma/prisma.module';
+import { PrismaService } from '../../../apps/api/src/prisma/prisma.service';
+import { OrdersModule } from '../../../apps/api/src/orders/orders.module';
 
 type FakeProduct = {
   productId: string;

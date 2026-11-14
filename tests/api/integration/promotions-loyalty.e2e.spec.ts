@@ -16,14 +16,14 @@ import {
 } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { HttpExceptionFilter } from '../common/filters/http-exception.filter';
-import { LoyaltyModule } from '../loyalty/loyalty.module';
-import { OrdersModule } from '../orders/orders.module';
-import { PaymentsModule } from '../payments/payments.module';
-import { PrismaModule } from '../prisma/prisma.module';
-import { PrismaService } from '../prisma/prisma.service';
-import { PromotionsModule } from './promotions.module';
+import { JwtAuthGuard } from '../../../apps/api/src/auth/jwt-auth.guard';
+import { HttpExceptionFilter } from '../../../apps/api/src/common/filters/http-exception.filter';
+import { LoyaltyModule } from '../../../apps/api/src/loyalty/loyalty.module';
+import { OrdersModule } from '../../../apps/api/src/orders/orders.module';
+import { PaymentsModule } from '../../../apps/api/src/payments/payments.module';
+import { PrismaModule } from '../../../apps/api/src/prisma/prisma.module';
+import { PrismaService } from '../../../apps/api/src/prisma/prisma.service';
+import { PromotionsModule } from '../../../apps/api/src/promotions/promotions.module';
 
 class FakePrismaCV21 {
   readonly users = new Map<string, any>();
