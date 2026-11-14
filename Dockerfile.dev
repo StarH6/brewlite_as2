@@ -1,0 +1,36 @@
+# Image dev dùng chung cho cả API và Web.
+# Toàn bộ Node, pnpm và dependency được cài bên trong image –
+# không cần cài Node/pnpm/Postgres trên máy host.
+FROM node:22-alpine AS dev
+
+RUN apk add --no-cache libc6-compat openssl ca-certificates
+
+WORKDIR /app
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV CHECKPOINT_DISABLE=1
+ENV PRISMA_HIDE_UPDATE_MESSAGE=1
+
+RUN corepack enable && corepack prepare pnpm@12.14.0 --activate
+
+# Copy manifest trước để tận dụng Docker layer cache khi source thay đổi.
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY apps/api/package.json apps/api/package.json
+COPY apps/web/package.json apps/web/package.json
+
+# Cache store pnpm giữa các lần build (cần BuildKit – mặc định ở Docker Desktop/OrbStack).
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+    pnpm install --frozen-lockfile --store-dir /pnpm/store --prefer-offline
+
+COPY . .
+
+# Prisma Client được generate sẵn trong image; container API generate lại
+# khi khởi động để phản ánh schema đang được mount từ host.
+RUN pnpm --filter @brewlite/api prisma:generate
+
+EXPOSE 3000 3001
+
+CMD ["pnpm", "--filter", "@brewlite/api", "start:dev"]
