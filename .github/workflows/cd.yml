@@ -1,11 +1,13 @@
 name: Continuous Delivery (CD)
 
-# Push lên main hoặc gắn tag vX.Y.Z -> lint/test/build -> build Docker image -> push GHCR.
+# Push lên main/dev hoặc gắn tag vX.Y.Z -> lint/test/build -> build Docker image -> push GHCR
+# -> deploy Render (API trước, web sau) -> smoke test. Smoke test lỗi thì job đỏ (fail-fast).
 # Không dùng secret tự tạo: đăng nhập GHCR bằng GITHUB_TOKEN có sẵn của Actions.
 on:
   push:
     branches:
       - main
+      - dev
     tags:
       - 'v*.*.*'
   workflow_dispatch:
@@ -115,3 +117,65 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.service }}
           cache-to: type=gha,scope=${{ matrix.service }},mode=max
           provenance: true
+
+  # CV20: deploy bằng Render Deploy Hook, ghim đúng image sha-<commit> (không dùng latest)
+  # để mỗi lần deploy truy vết và rollback được. Chưa cấu hình secret thì bỏ qua, không làm đỏ pipeline.
+  deploy:
+    name: Deploy production & smoke test
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment: production
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Check deploy configuration
+        id: cfg
+        env:
+          HOOK_API: ${{ secrets.RENDER_DEPLOY_HOOK_API_URL }}
+          HOOK_WEB: ${{ secrets.RENDER_DEPLOY_HOOK_WEB_URL }}
+          API_URL: ${{ vars.API_URL }}
+        run: |
+          if [ -z "$HOOK_API" ] || [ -z "$HOOK_WEB" ] || [ -z "$API_URL" ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Chưa cấu hình RENDER_DEPLOY_HOOK_API_URL / RENDER_DEPLOY_HOOK_WEB_URL / biến API_URL. Bỏ qua deploy."
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Compute image refs
+        if: steps.cfg.outputs.ready == 'true'
+        run: |
+          BASE="ghcr.io/${GITHUB_REPOSITORY,,}"
+          TAG="sha-${GITHUB_SHA::7}"
+          echo "API_IMAGE=${BASE}/api:${TAG}" >> "$GITHUB_ENV"
+          echo "WEB_IMAGE=${BASE}/web:${TAG}" >> "$GITHUB_ENV"
+
+      # API trước: Render kéo image, entrypoint chạy migrate (RUN_MIGRATIONS=true) rồi mới nhận traffic.
+      - name: Deploy API
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_API_URL }}
+        run: |
+          curl -fsS -X POST "${HOOK}&imgURL=${API_IMAGE}" > /dev/null
+          echo "Đã yêu cầu Render deploy ${API_IMAGE}"
+
+      - name: Smoke test API
+        if: steps.cfg.outputs.ready == 'true'
+        run: bash scripts/smoke-test.sh "${{ vars.API_URL }}"
+
+      - name: Deploy web
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_WEB_URL }}
+        run: |
+          curl -fsS -X POST "${HOOK}&imgURL=${WEB_IMAGE}" > /dev/null
+          echo "Đã yêu cầu Render deploy ${WEB_IMAGE}"
+
+      - name: Smoke test API + web
+        if: steps.cfg.outputs.ready == 'true'
+        run: bash scripts/smoke-test.sh "${{ vars.API_URL }}" "${{ vars.WEB_URL }}"

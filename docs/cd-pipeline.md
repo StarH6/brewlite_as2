@@ -88,6 +88,6 @@ docker run --rm -e DATABASE_URL=... brewlite-api:local npx prisma migrate deploy
 
 ## 7. Giới hạn hiện tại
 
-* Chưa deploy lên Render và chưa chạy smoke test sau deploy (Task 5.4).
+* Deploy Render, smoke test và rollback xem [`deploy-runbook.md`](./deploy-runbook.md) (CV20).
 * Chưa quét lỗ hổng image (Trivy) và chưa ký image.
 * Image API mang theo dev dependency để dùng Prisma CLI, nên lớn hơn mức tối thiểu; có thể tối ưu sau.
