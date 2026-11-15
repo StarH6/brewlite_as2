@@ -1,0 +1,16 @@
+{
+  "extends": "../../apps/web/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../..",
+    "paths": {
+      "@playwright/test": ["apps/web/node_modules/@playwright/test"],
+      "dotenv": ["apps/web/node_modules/dotenv"],
+      "@prisma/client": ["apps/api/node_modules/@prisma/client"]
+    },
+    "typeRoots": ["../../apps/web/node_modules/@types"],
+    "types": ["node"],
+    "incremental": false
+  },
+  "include": ["e2e/**/*.ts", "../helpers/**/*.ts"],
+  "exclude": ["../../node_modules"]
+}

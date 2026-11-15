@@ -60,7 +60,7 @@ function SuccessResult({ result }: { result: Extract<CheckoutResult, { status: '
             Mã đơn hàng
           </span>
           <div className="flex items-center gap-2">
-            <span className="font-mono text-base font-bold text-coffee-900">
+            <span className="font-mono text-base font-bold text-coffee-900" data-testid="order-code">
               {result.orderCode}
             </span>
             <button

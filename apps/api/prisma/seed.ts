@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -376,6 +377,8 @@ async function main(): Promise<void> {
   await seedOptionIngredients();
   await seedPromotions();
   await seedPaymentTestData();
+  await seedPaymentTestData();
+  await seedE2eUser();
 
   const [productCount, optionCount, promotionCount, ingredientCount] = await Promise.all([
     prisma.product.count(),
@@ -473,4 +476,25 @@ async function seedPaymentTestData(): Promise<void> {
 
     console.info(`Đã tạo đơn hàng ${orderData.orderCode}`);
   }
+
+}
+
+  async function seedE2eUser(): Promise<void> {
+  // Chỉ dùng cho môi trường dev/e2e. Phải khớp E2E_PASSWORD trong .env.e2e.
+  const email = 'e2e-tester@brewlite.local';
+  const password = 'E2eTest@12345';
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  await prisma.user.upsert({
+    where: { email },
+    update: { passwordHash, isActive: true },
+    create: {
+      userId: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+      username: 'e2e-tester',
+      email,
+      passwordHash,
+      role: 'CUSTOMER',
+      isActive: true,
+    },
+  });
 }
