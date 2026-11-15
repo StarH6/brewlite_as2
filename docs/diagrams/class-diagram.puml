@@ -104,7 +104,16 @@ hide circle
         +amount: Decimal
         +method: PaymentMethod
         +status: PaymentStatus
-        +transactionReference: String
+        +transactionReference: String?
+        +provider: String
+        +providerTxnRef: String?
+        +paymentUrl: String?
+        +expiresAt: DateTime?
+        +responseCode: String?
+        +transactionStatus: String?
+        +bankCode: String?
+        +payDate: DateTime?
+        +refundRequired: Boolean
         +createdAt: DateTime
     }
 
