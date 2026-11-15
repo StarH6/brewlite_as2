@@ -1,0 +1,44 @@
+# Render Blueprint tham khảo cho BrewLite (CV20). Thay OWNER/REPO bằng đường dẫn GHCR thật (viết thường).
+# Tạo: Render Dashboard -> New -> Blueprint -> chọn repo. Các biến `sync: false` nhập tay trên Dashboard.
+# Đối chiếu với tài liệu Render hiện hành trước khi dùng vì cú pháp/gói dịch vụ có thể thay đổi.
+databases:
+  - name: brewlite-db
+    databaseName: brewlite
+    plan: free
+
+services:
+  - type: web
+    name: brewlite-api
+    runtime: image
+    image:
+      url: ghcr.io/OWNER/REPO/api:latest
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: RUN_MIGRATIONS
+        value: 'true'
+      - key: DATABASE_URL
+        fromDatabase:
+          name: brewlite-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 1h
+      - key: CORS_ORIGIN
+        sync: false # URL HTTPS của web, vd https://brewlite-web.onrender.com
+      - key: WEB_BASE_URL
+        sync: false # như CORS_ORIGIN
+      - key: PAYMENT_PROVIDER
+        value: mock
+
+  - type: web
+    name: brewlite-web
+    runtime: image
+    image:
+      url: ghcr.io/OWNER/REPO/web:latest
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
