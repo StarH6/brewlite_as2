@@ -1,0 +1,102 @@
+@startuml SD01_DatVaThanhToan
+actor "Customer" as C
+boundary "Next.js UI" as UI
+control "NestJS API" as API
+database "Database\n(PostgreSQL)" as DB
+participant "Payment Service\n(MOCK)" as PAY
+
+
+C -> UI: Xac nhan dat hang
+UI -> API: POST /orders\n(Bearer JWT, items, promoCode)
+activate API
+
+API -> API: JwtAuthGuard kiem tra JWT
+alt JWT thieu, sai hoac het han
+    API --> UI: 401 Unauthorized
+    UI --> C: Thong bao can dang nhap lai
+else JWT hop le
+    API -> API: ValidationPipe validate DTO
+    alt DTO khong hop le
+        API --> UI: 400 Bad Request
+        UI --> C: Hien thi loi du lieu don hang
+    else DTO hop le
+        group Tao don va cap nhat ton kho - mot transaction
+            API -> DB: BEGIN TRANSACTION\n(Isolation: Serializable)
+            API -> DB: Kiem tra san pham, options,\ncong thuc va ton kho
+            DB --> API: Du lieu va ket qua kiem tra
+
+            alt San pham/option khong hop le
+                API -> DB: ROLLBACK
+                API --> UI: 400 Bad Request
+                UI --> C: Thong bao san pham khong hop le
+            else Khong du ton kho/nguyen lieu
+                API -> DB: ROLLBACK
+                API --> UI: 400 Bad Request
+                UI --> C: Thong bao khong du ton kho
+            else Du dieu kien tao don
+                API -> DB: Tru ton kho san pham va nguyen lieu\n(update co dieu kien)
+                API -> DB: Tao Order PENDING va OrderItems
+                API -> DB: COMMIT
+                DB --> API: orderId, orderCode, totalAmount
+                API --> UI: 201 Created\n(orderId, orderCode, totalAmount)
+
+                UI -> UI: Tao Idempotency-Key
+                UI -> API: POST /payments\n(JWT, orderId, method, Idempotency-Key)
+                API -> API: Kiem tra JWT va validate DTO/header
+
+                alt JWT hoac du lieu thanh toan khong hop le
+                    API --> UI: 401/400
+                    UI --> C: Thong bao loi yeu cau thanh toan
+                else Yeu cau thanh toan hop le
+                    API -> DB: Tim Order theo orderId va userId
+                    DB --> API: Order va trang thai hien tai
+
+                    alt Khong tim thay Order / khong thuoc nguoi dung
+                        API --> UI: 404 Not Found
+                        UI --> C: Khong tim thay don hang
+                    else Tim thay Order
+                        API -> DB: Tim Payment theo\n(userId, orderId, Idempotency-Key)
+                        DB --> API: Ket qua tim Payment
+
+                        alt Da co Payment voi cung key
+                            API --> UI: 200 OK\n(Tra ket qua cu, reused=true)
+                            UI --> C: Hien thi ket qua thanh toan da ghi nhan
+                        else Chua co Payment voi key nay
+                            API -> PAY: Xu ly thanh toan MOCK\n(orderId, amount, method)
+                            activate PAY
+
+                            alt Thanh toan thanh cong
+                                PAY --> API: Thanh cong
+                                group Luu ket qua thanh toan - mot transaction
+                                    API -> DB: BEGIN TRANSACTION
+                                    API -> DB: Cap nhat Order PENDING -> PAID\n(update co dieu kien)
+                                    API -> DB: Tao Payment PAID\n(amount lay tu Order, idempotencyKey)
+                                    API -> DB: COMMIT
+                                    DB --> API: Payment PAID, Order PAID
+                                end
+                                API --> UI: 200 OK\n(paymentStatus=PAID, orderStatus=PAID)
+                                UI -> UI: Xoa gio hang
+                                UI --> C: Thong bao dat hang va thanh toan thanh cong
+                            else Thanh toan that bai
+                                PAY --> API: That bai
+                                group Luu ket qua that bai - mot transaction
+                                    API -> DB: BEGIN TRANSACTION
+                                    API -> DB: Cap nhat Order PENDING -> PAYMENT_FAILED
+                                    API -> DB: Tao Payment FAILED\n(idempotencyKey)
+                                    API -> DB: COMMIT
+                                    DB --> API: Payment FAILED, Order PAYMENT_FAILED
+                                end
+                                API --> UI: 200 OK\n(orderStatus=PAYMENT_FAILED)
+                                UI --> C: Thong bao thanh toan that bai\nva huong dan thu lai
+                            end
+                            deactivate PAY
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+deactivate API
+@enduml

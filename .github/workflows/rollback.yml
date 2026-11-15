@@ -1,0 +1,53 @@
+name: Rollback production
+
+# Chạy tay: Actions -> Rollback production -> Run workflow, nhập image_tag của bản ổn định trước đó
+# (ví dụ sha-1a2b3c4 hoặc 1.0.0). Deploy lại đúng image đó cho API và web rồi smoke test.
+# Migration KHÔNG tự lùi (forward-only), xem docs/deploy-runbook.md mục 5.
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Tag image cần quay về (vd: sha-1a2b3c4 hoặc 1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Validate tag
+        env:
+          TAG: ${{ inputs.image_tag }}
+        run: |
+          if ! printf '%s' "$TAG" | grep -Eq '^[A-Za-z0-9_.-]{1,128}$'; then
+            echo "::error::image_tag không hợp lệ."; exit 1
+          fi
+
+      - name: Redeploy API
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_API_URL }}
+          TAG: ${{ inputs.image_tag }}
+        run: |
+          BASE="ghcr.io/${GITHUB_REPOSITORY,,}"
+          curl -fsS -X POST "${HOOK}&imgURL=${BASE}/api:${TAG}" > /dev/null
+          echo "Rollback API về ${BASE}/api:${TAG}"
+
+      - name: Redeploy web
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_WEB_URL }}
+          TAG: ${{ inputs.image_tag }}
+        run: |
+          BASE="ghcr.io/${GITHUB_REPOSITORY,,}"
+          curl -fsS -X POST "${HOOK}&imgURL=${BASE}/web:${TAG}" > /dev/null
+          echo "Rollback web về ${BASE}/web:${TAG}"
+
+      - name: Smoke test sau rollback
+        run: bash scripts/smoke-test.sh "${{ vars.API_URL }}" "${{ vars.WEB_URL }}"

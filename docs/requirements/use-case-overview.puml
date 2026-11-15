@@ -1,0 +1,55 @@
+@startuml
+' Converted from the supplied draw.io use-case diagram
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam defaultFontName Arial
+
+actor "Khách hàng" as Customer
+actor "Nhân viên / Quản lý" as Staff
+
+rectangle "Hệ thống đặt hàng" {
+  usecase "Nhấn đặt hàng" as PlaceOrder
+  usecase "Thanh toán đơn hàng" as Checkout
+  usecase "Áp dụng mã khuyến mãi" as Promo
+  usecase "Thanh toán bằng Ví" as Wallet
+  usecase "Thanh toán bằng Thẻ" as Card
+
+  usecase "Xem lịch sử đơn hàng" as History
+  usecase "Xem menu" as Menu
+  usecase "Xem chi tiết sản phẩm" as ProductDetails
+  usecase "Đăng nhập" as Login
+  usecase "Đăng ký" as Register
+  usecase "Xem giỏ hàng" as Cart
+  usecase "Thay đổi số lượng" as Quantity
+  usecase "Thêm vào giỏ hàng" as AddToCart
+  usecase "Chọn topping" as Topping
+  usecase "Chọn size đồ uống" as Size
+  usecase "Quản lý trạng thái đơn hàng" as ManageOrder
+}
+
+Customer -- PlaceOrder
+Customer -- History
+Customer -- Menu
+Customer -- ProductDetails
+Customer -- Login
+Customer -- Register
+Customer -- Cart
+
+Staff -- Login
+Staff -- ManageOrder
+
+PlaceOrder ..> Checkout : <<include>>
+Promo ..> Checkout : <<extend>>
+Wallet ..> Checkout : <<extend>>
+Card ..> Checkout : <<extend>>
+
+Cart ..> Quantity : <<extend>>
+AddToCart ..> ProductDetails : <<extend>>
+Topping .. AddToCart
+Size .. AddToCart
+
+' Source note: the AddToCart -> ProductDetails edge has BOTH
+' <<extend>> and <<include>> labels in draw.io; <<extend>> is retained here.
+' Source note: Topping / Size dashed edges have no reliable stereotype.
+@enduml

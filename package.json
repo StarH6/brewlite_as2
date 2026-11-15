@@ -1,0 +1,28 @@
+{
+  "name": "brewlite",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BrewLite – monorepo gồm Next.js PWA và NestJS API",
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "dev:api": "pnpm --filter @brewlite/api start:dev",
+    "dev:web": "pnpm --filter @brewlite/web dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm --filter @brewlite/api test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prisma:generate": "pnpm --filter @brewlite/api prisma:generate",
+    "db:migrate": "pnpm --filter @brewlite/api db:migrate",
+    "db:migrate:deploy": "pnpm --filter @brewlite/api db:migrate:deploy",
+    "db:seed": "pnpm --filter @brewlite/api db:seed",
+    "db:reset": "pnpm --filter @brewlite/api db:reset",
+    "db:studio": "pnpm --filter @brewlite/api db:studio"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}

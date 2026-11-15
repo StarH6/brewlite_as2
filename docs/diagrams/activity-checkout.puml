@@ -1,0 +1,57 @@
+@startuml
+title Activity-01 – Luồng đặt hàng và thanh toán (BrewLite)
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam ArrowColor #444444
+skinparam ActivityBorderColor #4b2e1f
+skinparam ActivityBackgroundColor #f7f1e8
+skinparam ActivityDiamondBorderColor #4b2e1f
+skinparam ActivityDiamondBackgroundColor #ffffff
+skinparam SwimlaneBorderColor #999999
+
+|Khách hàng|
+start
+repeat
+  :Nhập email, mật khẩu\nvà nhấn "Đăng nhập";
+  |Hệ thống|
+  :Xác thực tài khoản,\ncấp JWT;
+  |Khách hàng|
+backward :Xem thông báo\n"Sai thông tin đăng nhập";
+repeat while (Đăng nhập thành công?) is (chưa) not (rồi)
+
+:Xem menu, chọn đồ uống;
+:Chọn size, topping\nvà thêm vào giỏ;
+
+repeat
+  :Xem giỏ hàng,\nnhấn "Đặt hàng";
+  |Hệ thống|
+  :Kiểm tra tồn kho;
+  if (Còn đủ hàng?) then (hết hàng)
+    :Thông báo món hết hàng;
+    |Khách hàng|
+    :Bỏ món hết hàng\nhoặc đổi món khác;
+  else (còn hàng)
+  endif
+repeat while (Còn món hết hàng?) is (có) not (không)
+
+|Hệ thống|
+:Tạo đơn hàng (PENDING)\nvà trừ tồn kho;
+
+repeat
+  |Khách hàng|
+  :Chọn phương thức\nvà xác nhận thanh toán;
+  |Hệ thống|
+  :Xử lý thanh toán mô phỏng\n(Idempotency-Key chống trừ tiền hai lần);
+  if (Thanh toán thành công?) then (có)
+    :Đơn hàng = PAID,\ncộng điểm tích lũy;
+  else (thất bại)
+    :Đơn hàng = PAYMENT_FAILED;
+  endif
+  |Khách hàng|
+  :Xem kết quả thanh toán\n(thành công / lỗi);
+repeat while (Thanh toán lỗi và khách thử lại?) is (thử lại) not (không)
+
+:Theo dõi đơn hàng\n(trang "Đơn hàng của tôi");
+stop
+@enduml
