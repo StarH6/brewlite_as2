@@ -1,12 +1,13 @@
 name: Continuous Delivery (CD)
 
-# Push lên main hoặc gắn tag vX.Y.Z -> lint/test/build -> build Docker image -> push GHCR
+# Push lên main/dev hoặc gắn tag vX.Y.Z -> lint/test/build -> build Docker image -> push GHCR
 # -> deploy Render (API trước, web sau) -> smoke test. Smoke test lỗi thì job đỏ (fail-fast).
 # Không dùng secret tự tạo: đăng nhập GHCR bằng GITHUB_TOKEN có sẵn của Actions.
 on:
   push:
     branches:
       - main
+      - dev
     tags:
       - 'v*.*.*'
   workflow_dispatch:
