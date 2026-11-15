@@ -2,7 +2,7 @@ import path from 'node:path';
 import { config } from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 
-config({ path: path.resolve(__dirname, '../../../.env.e2e') });
+config({ path: path.resolve(__dirname, '../../.env.e2e') });
 
 const databaseUrl = process.env.DATABASE_URL_E2E;
 

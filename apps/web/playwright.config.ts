@@ -8,7 +8,8 @@ config({
 });
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: '../../tests/web/e2e',
+  tsconfig: '../../tests/web/tsconfig.e2e.json',
 
   fullyParallel: false,
   workers: 1,
