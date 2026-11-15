@@ -8,7 +8,8 @@ config({
 });
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: '.',
+  testMatch: '**/*.pw.ts',
 
   fullyParallel: false,
   workers: 1,

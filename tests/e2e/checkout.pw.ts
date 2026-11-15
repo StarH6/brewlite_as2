@@ -3,7 +3,7 @@ import {
   verifyDatabaseConnection,
   findOrderByCode,
   disconnectPrisma,
-} from '../../api/e2e/prisma-reader';
+} from '../../apps/api/e2e/prisma-reader';
 
 test.beforeAll(async () => {
   await verifyDatabaseConnection();

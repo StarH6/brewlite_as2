@@ -166,6 +166,12 @@ importers:
 
   .:
     devDependencies:
+      '@playwright/test':
+        specifier: ^1.65.1
+        version: 1.65.1
+      dotenv:
+        specifier: ^18.0.10
+        version: 18.0.10
       prettier:
         specifier: ^3.4.2
         version: 3.9.10

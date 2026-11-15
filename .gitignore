@@ -48,3 +48,7 @@ BrewLite-CongNghePhanMem.pdf
 
 # Playwright E2E environment
 .env.e2e
+playwright-report/
+test-results/
+tests/e2e/playwright-report/
+tests/e2e/test-results/

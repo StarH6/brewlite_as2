@@ -23,6 +23,8 @@
     "db:studio": "pnpm --filter @brewlite/api db:studio"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "dotenv": "^18.0.10",
     "prettier": "^3.4.2"
   }
 }
